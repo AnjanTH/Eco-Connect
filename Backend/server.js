@@ -29,10 +29,13 @@ app.get('/', (req, res) => {
 // Import routes
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+
 
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
+app.use('/api/projects', projectRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
