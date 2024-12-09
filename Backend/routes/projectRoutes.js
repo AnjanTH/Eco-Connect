@@ -9,6 +9,6 @@ router.post('/create', protect, createProject);
 
 
 router.get('/user-projects', protect, getUserProjects);
-router.get('/all-projects',protect, getAllProjects);
+router.get('/all-projects', getAllProjects);
 
 module.exports = router;

@@ -6,13 +6,17 @@ import ProjectSubmission from './Pages/CreateProject';
 import UserProjects from './Pages/UserProjects';
 import AllProjects from './Pages/Allprojects';
 import Navbar from './components/Header/Navbar';
+import DashboardLayoutBasic from './Pages/dashboard/Dashboard';
+import EcoConnectHomePage from './Pages/Home/Home';
 
 const App = () => {
   return (
     <Router>
-      <Navbar/>
+      
       <div className="app-container">
         <Routes>
+          <Route path="/" element={<EcoConnectHomePage/>}/>
+          <Route path="/dashboard" element={<DashboardLayoutBasic/>}/>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/create" element={<ProjectSubmission />} />
