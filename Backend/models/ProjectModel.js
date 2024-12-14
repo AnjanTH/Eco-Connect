@@ -18,7 +18,8 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  extraField: { // You can add any additional field
+  extra: { // You can add any additional field
+    required:true,
     type: String
   },
   createdAt: {

@@ -29,10 +29,11 @@ const SignUp = () => {
         address,
         password,
       });
-
+        
       toast.success("Sign-up successful!");
       console.log("Sign-Up Response:", response.data);
-
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.id);
       setTimeout(() => {
         navigate("/dashboard");
       }, 3000);
@@ -52,11 +53,7 @@ const SignUp = () => {
         href="#"
         className="flex items-center justify-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-800"
       >
-        <img
-          className="w-8 h-8 mr-2"
-          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-          alt="logo"
-        />
+      
         <span className="text-xl md:text-2xl">EcoConnect</span>
       </a>
         <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-lg xl:p-0">

@@ -4,6 +4,7 @@ const mongoose = require("./config/db");
 const cors = require('cors');
 const morgan = require('morgan');
 
+
 // Load environment variables
 dotenv.config();
 
@@ -30,12 +31,18 @@ app.get('/', (req, res) => {
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const projectRoutes = require('./routes/projectRoutes');
-
-
+const aichatbot=require('./routes/aichatBotRoute')
+const eventRoutes=require('./routes/eventRoutes')
+const ecoCoinRoutes = require('./routes/ecoCoinRoutes');
+const userRoutes = require("./routes/userRoutes");
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
 app.use('/api/projects', projectRoutes);
+app.use("/api", aichatbot);
+app.use("/api/events", eventRoutes);
+app.use("/api", userRoutes);
+app.use('/api/eco-coins', ecoCoinRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

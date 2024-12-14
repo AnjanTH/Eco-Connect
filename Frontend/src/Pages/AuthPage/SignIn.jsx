@@ -25,8 +25,11 @@ const SignIn = () => {
       setTimeout(() => {
         setLoading(false);
         setIsLoggingIn(false);
+        console.log(response.data);
         if (response.status === 200) {
+          // Store the token and userId in localStorage
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data.id);  // Assuming response contains user.id
           navigate("/dashboard");
         } else {
           setError("Invalid email or password.");
@@ -66,11 +69,7 @@ const SignIn = () => {
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-800"
         >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
+          
           EcoConnect
         </a>
         <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">

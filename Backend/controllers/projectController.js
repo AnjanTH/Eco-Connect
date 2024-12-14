@@ -3,10 +3,10 @@ const Project = require('../models/ProjectModel');
 // Controller to create a new project submission
 const createProject = async (req, res) => {
   try {
-    const { title, problemStatement, proposedSolution, extraField } = req.body;
+    const { title, problemStatement, proposedSolution, extra } = req.body;
     
     // Check for missing fields
-    if (!title || !problemStatement || !proposedSolution) {
+    if (!title || !problemStatement || !proposedSolution||!extra) {
       return res.status(400).json({ message: 'Please provide all required fields.' });
     }
 
@@ -14,13 +14,12 @@ const createProject = async (req, res) => {
     const project = new Project({
       username: req.user.username, 
       user: req.user._id,
-      
       title,
       problemStatement,
       proposedSolution,
-      extraField
+      extra
     });
-
+ 
     await project.save();
     res.status(201).json({ message: 'Project submitted successfully.', project });
   } catch (error) {
