@@ -47,6 +47,7 @@ const ProjectCard = ({ id, title, problemStatement, proposedSolution, extra, sub
 
 const AllProjects = () => {
   const [projects, setProjects] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -61,6 +62,10 @@ const AllProjects = () => {
     fetchProjects();
   }, []);
 
+  const filteredProjects = projects.filter((project) =>
+    project.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="relative bg-gray-50 px-6 py-24 sm:py-32 lg:px-0">
       <div className="mx-auto max-w-2xl text-center">
@@ -71,18 +76,35 @@ const AllProjects = () => {
           Discover the innovative solutions submitted by our users.
         </p>
       </div>
+
+      {/* Search Bar */}
+      <div className="mt-8 mx-auto max-w-2xl text-center">
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      {/* Projects Grid */}
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-y-10 mt-16">
-        {projects.map((project) => (
-          <ProjectCard
-            key={project._id}
-            id={project._id}
-            title={project.title}
-            problemStatement={project.problemStatement}
-            proposedSolution={project.proposedSolution}
-            extra={project.extra}
-            submittedBy={project.user?.username || project.username}
-          />
-        ))}
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
+            <ProjectCard
+              key={project._id}
+              id={project._id}
+              title={project.title}
+              problemStatement={project.problemStatement}
+              proposedSolution={project.proposedSolution}
+              extra={project.extra}
+              submittedBy={project.user?.username || project.username}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-600">No projects found.</p>
+        )}
       </div>
     </div>
   );

@@ -18,8 +18,10 @@ import EventCreationForm from './Pages/LocalInitiatives/Event_creation';
 import EventList from './Pages/LocalInitiatives/Event_list';
 import Layout from "./components/Layout";
 import Profile from './Pages/Profile/Profilepage';
+import PredictCo2 from './Pages/Co2/Predict';
 
-
+import './App.css'
+import PageNotFound from './Pages/ErrorPage/PageNotfound';
 const App = () => {
   return (
     <Router>
@@ -44,6 +46,8 @@ const App = () => {
             <Route path="/create-event" element={<EventCreationForm />} />
             <Route path="/eventlist" element={<EventList />} />
             <Route path="/user/profile/:id" element={<Profile/>}/>
+            <Route path="/user/predictco2" element={<PredictCo2/>}/>
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
       </div>

@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
          type: String, 
          required: true 
         },
+    ecocoins:{
+        type:Number,
+        default:0,
+    }
 });
 
 // Hash password before saving user

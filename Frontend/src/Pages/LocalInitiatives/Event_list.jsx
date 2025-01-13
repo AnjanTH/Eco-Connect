@@ -7,6 +7,8 @@ const EventList = () => {
   const [error, setError] = useState(null);
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [popupMessage, setPopupMessage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -15,8 +17,12 @@ const EventList = () => {
         if (!response.ok) throw new Error("Failed to fetch events");
 
         const data = await response.json();
-        if (Array.isArray(data)) setEvents(data);
-        else throw new Error("Invalid API response format");
+        if (Array.isArray(data)) {
+          setEvents(data);
+          setFilteredEvents(data); // Initialize filtered events
+        } else {
+          throw new Error("Invalid API response format");
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -34,14 +40,18 @@ const EventList = () => {
     return `${formattedHours}:${minutes} ${period}`;
   };
 
-  const sortedEvents = Array.isArray(events)
-    ? events
-        .map((event) => ({
-          ...event,
-          status: new Date(event.date) > new Date() ? "Upcoming" : "Closed",
-        }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-    : [];
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+
+    const lowerCaseQuery = query.toLowerCase();
+    const filtered = events.filter(
+      (event) =>
+        event.location.toLowerCase().includes(lowerCaseQuery) ||
+        event.date.includes(lowerCaseQuery)
+    );
+
+    setFilteredEvents(filtered);
+  };
 
   const handleRegister = (eventId) => {
     setRegisteredEvents((prev) => new Set(prev.add(eventId)));
@@ -61,16 +71,36 @@ const EventList = () => {
       .catch((error) => console.error("Error registering for event:", error));
   };
 
+  const sortedEvents = filteredEvents.map((event) => ({
+    ...event,
+    status: new Date(event.date) > new Date() ? "Upcoming" : "Closed",
+  }));
+
+  const upcomingEvents = sortedEvents.filter(
+    (event) => event.status === "Upcoming"
+  );
+  const closedEvents = sortedEvents.filter((event) => event.status === "Closed");
+
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-6">
+    <div className="min-h-screen bg-gray-100 py-10 px-6 mt-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Events</h1>
           <Link to="/create-event">
-            <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+            <button className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
               Create New Event
             </button>
           </Link>
+        </div>
+
+        <div className="mb-8">
+          <input
+            type="text"
+            placeholder="Search by location or date..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         {loading ? (
@@ -78,16 +108,22 @@ const EventList = () => {
         ) : error ? (
           <p className="text-center text-lg text-red-600">Error: {error}</p>
         ) : (
-          <div>
+          <>
             <h2 className="text-3xl font-semibold text-gray-700 mb-6">
               Upcoming Events
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {sortedEvents.length > 0 ? (
-                sortedEvents.map((event, index) => (
+              {upcomingEvents.length > 0 ? (
+                upcomingEvents.map((event, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
+                    className={`bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 ${
+                      event.location.toLowerCase().includes(
+                        searchQuery.toLowerCase()
+                      )
+                        ? "border-2 border-gray-500"
+                        : ""
+                    }`}
                   >
                     <div className="p-6 flex flex-col h-full">
                       <h3 className="text-2xl font-semibold text-gray-700 mb-2">
@@ -101,56 +137,61 @@ const EventList = () => {
                       <p className="mt-2 text-lg text-gray-800">
                         <strong>Location:</strong> {event.location}
                       </p>
-                      <p
-                        className={`mt-4 ${
-                          event.status === "Upcoming"
-                            ? "text-blue-600"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        {event.status === "Upcoming"
-                          ? "This event is upcoming!"
-                          : "This event is closed."}
+                      <p className="mt-4 text-green-600">
+                        This event is upcoming!
                       </p>
-
-                      {event.status === "Upcoming" &&
-                        !registeredEvents.has(event._id) && (
-                          <button
-                            onClick={() => handleRegister(event._id)}
-                            className="mt-auto bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
-                          >
-                            Register
-                          </button>
-                        )}
-
-                      {event.status === "Upcoming" &&
-                        registeredEvents.has(event._id) && (
-                          <button
-                            disabled
-                            className="mt-auto bg-gray-500 text-white py-2 px-4 rounded-lg cursor-not-allowed"
-                          >
-                            Registered
-                          </button>
-                        )}
+                      <button
+                        onClick={() => handleRegister(event._id)}
+                        className="mt-5 bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200"
+                      >
+                        Register
+                      </button>
                     </div>
                   </div>
                 ))
               ) : (
                 <p className="text-center text-lg text-gray-600">
-                  No events scheduled.
+                  No upcoming events found.
                 </p>
               )}
             </div>
-          </div>
+
+            <h2 className="text-3xl font-semibold text-gray-700 mt-10 mb-6">
+              Closed Events
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {closedEvents.length > 0 ? (
+                closedEvents.map((event, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-200 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105"
+                  >
+                    <div className="p-6 flex flex-col h-full">
+                      <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+                        {event.title}
+                      </h3>
+                      <p className="text-gray-600">{event.description}</p>
+                      <p className="mt-4 text-lg text-gray-800">
+                        <strong>Date:</strong> {event.date}{" "}
+                        <strong>Time:</strong> {formatTime(event.time)}
+                      </p>
+                      <p className="mt-2 text-lg text-gray-800">
+                        <strong>Location:</strong> {event.location}
+                      </p>
+                      <p className="mt-4 text-gray-500">This event is closed.</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-lg text-gray-600">
+                  No closed events found.
+                </p>
+              )}
+            </div>
+          </>
         )}
 
-        {popupMessage && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-lg">
-              <p className="text-center text-blue-600">{popupMessage}</p>
-            </div>
-          </div>
-        )}
+       
       </div>
     </div>
   );

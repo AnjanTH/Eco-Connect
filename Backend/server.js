@@ -35,6 +35,8 @@ const aichatbot=require('./routes/aichatBotRoute')
 const eventRoutes=require('./routes/eventRoutes')
 const ecoCoinRoutes = require('./routes/ecoCoinRoutes');
 const userRoutes = require("./routes/userRoutes");
+const emissionRoutes = require('./routes/emissionRoutes');
+const leaderboardRoutes=require('./routes/leaderboardRoute')
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
@@ -43,7 +45,8 @@ app.use("/api", aichatbot);
 app.use("/api/events", eventRoutes);
 app.use("/api", userRoutes);
 app.use('/api/eco-coins', ecoCoinRoutes);
-
+app.use('/api/emissions', emissionRoutes);
+app.use('/api',leaderboardRoutes);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 

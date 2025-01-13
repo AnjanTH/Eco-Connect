@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import EnvironmentalImpactChart from "../Graphs/Graph";
 import AOS from "aos";
-import "aos/dist/aos.css"; 
+import "aos/dist/aos.css";
+
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,7 +11,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     AOS.init({ duration: 1000 }); // Initialize AOS animations
-    AOS.refresh(); 
+    AOS.refresh();
+
     const fetchUserData = async () => {
       try {
         const id = localStorage.getItem("userId"); // Get the user id from localStorage
@@ -46,71 +48,66 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container p-6 bg-gray-100 min-h-screen">
       {/* Welcome Section */}
-      <div className="flex mt-20 p-8 bg-white rounded-lg shadow-md">
-        <div className="welcome-section flex-1 flex justify-center items-center">
-          <div className="text-left">
-            <h1 className="text-3xl font-semibold">
-              Welcome, {userData?.username || "User"}!
-            </h1>
-            <p className="mt-4 text-xl">
-              Welcome to your EcoConnect dashboard.
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row mt-20 p-6 md:p-8 bg-white rounded-lg shadow-md items-center">
+        <div className="welcome-section flex-1 text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-semibold">
+            Welcome, {userData?.username || "User"}!
+          </h1>
+          <p className="mt-4 text-lg md:text-xl">
+            Welcome to your EcoConnect dashboard.
+          </p>
         </div>
-        <div className="image-section flex-1 text-right">
+        <div className="image-section flex-1 mt-6 md:mt-0">
           <img
             src="/Images/EcoConnect.jpg"
             alt="Welcome"
-            className="mx-auto mt-4 rounded-lg"
-            style={{ maxWidth: "400px", height: "auto" }}
+            className="mx-auto rounded-lg"
+            style={{ maxWidth: "300px", height: "auto" }}
           />
         </div>
       </div>
-       {/* Environmental Impact Chart */}
-       <div className="environment-impact-chart mt-12">
-        <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
+
+      {/* Environmental Impact Chart */}
+      <div className="environment-impact-chart mt-12">
+        <h2 className="text-xl md:text-2xl font-bold text-center text-green-700 mb-6">
           Environmental Impact Breakdown
         </h2>
-        <EnvironmentalImpactChart /> 
+        <EnvironmentalImpactChart />
       </div>
-      <div className="environment-section mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left Side - Image */}
-        <div className="image-container flex justify-center items-center">
+
+      {/* How Our Planet is Being Affected */}
+      <div className="environment-section mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="image-container flex justify-center">
           <img
             src="/Images/world.avif"
             alt="Save Environment"
             className="rounded-lg shadow-md"
-            style={{ width: "500px", height: "auto" }}
+            style={{ width: "100%", maxWidth: "400px", height: "auto" }}
           />
         </div>
-
-        {/* Right Side - Content */}
         <div className="content-container flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-green-700 mb-4">
+          <h2 className="text-lg md:text-2xl font-bold text-green-700 mb-4">
             How Our Planet is Being Affected
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            The Earth is facing unprecedented challenges due to human
-            activities. Deforestation, pollution, and climate change are
-            disrupting ecosystems and threatening biodiversity. Rising sea
-            levels and extreme weather events are directly impacting millions of
-            lives, forcing communities to adapt to rapidly changing
-            environments.
+            The Earth is facing unprecedented challenges due to human activities.
+            Deforestation, pollution, and climate change are disrupting ecosystems
+            and threatening biodiversity. Rising sea levels and extreme weather
+            events are directly impacting millions of lives.
           </p>
           <p className="text-gray-700 leading-relaxed">
             Addressing these challenges requires immediate action and
-            collaboration. Every small step, whether it's reducing waste,
-            conserving energy, or planting trees, contributes to building a
-            sustainable future for generations to come. Together, we can make a
-            difference.
+            collaboration. Every small step contributes to building a sustainable
+            future for generations to come.
           </p>
         </div>
       </div>
-      {/* Save Environment Sections */}
+
+      {/* Action Blocks */}
       <div className="environment-section mt-12 space-y-12">
         {/* Action Block 1 */}
-        <div className="action-block bg-green-50 p-8 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold text-green-600 mb-4 text-center">
+        <div className="action-block bg-green-50 p-6 md:p-8 rounded-lg shadow-md">
+          <h2 className="text-lg md:text-xl font-bold text-green-600 mb-4 text-center">
             "The Earth is what we all have in common."
           </h2>
           <p className="text-gray-700 mb-6 text-center">
@@ -120,7 +117,7 @@ const Dashboard = () => {
           <div className="text-center">
             <Link
               to="/create"
-              className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition"
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
             >
               Create a Project
             </Link>
@@ -128,18 +125,18 @@ const Dashboard = () => {
         </div>
 
         {/* Action Block 2 */}
-        <div className="action-block bg-blue-50 p-8 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold text-blue-600 mb-4 text-center">
+        <div className="action-block bg-blue-50 p-6 md:p-8 rounded-lg shadow-md">
+          <h2 className="text-lg md:text-xl font-bold text-blue-600 mb-4 text-center">
             "Coming together is a beginning, staying together is progress."
           </h2>
           <p className="text-gray-700 mb-6 text-center">
             Collaborate with others to create sustainable solutions. Join hands
-            with like-minded individuals to multiply your impact.
+            with like-minded individuals.
           </p>
           <div className="text-center">
             <Link
               to="/all-projects"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
             >
               Collaborate on Projects
             </Link>

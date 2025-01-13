@@ -1,4 +1,5 @@
 import React from "react";
+import { useState,useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom"; 
 import {
   Disclosure,
@@ -25,20 +26,64 @@ function classNames(...classes) {
 
 
 const Layout = () => {
+  const [user, setUser] = useState(null);
+  const [error,setError]=useState('')
+  
+
   const userId = localStorage.getItem("userId");
+  
   const navigate = useNavigate(); 
+  // if(!userId)
+  //   navigate('/signin')
   const handleSignOut = () => {
-    // Clear JWT token and user ID from local storage
+   
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    
+   
+    navigate("/"); 
+  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        
 
-    // Redirect the user to the home page or login page
-    navigate("/"); // Or you can navigate to "/login" if you have a login page
+        const response = await fetch(`http://localhost:8080/api/user/${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await response.json();
+        console.log(data)
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      } 
+    };
+
+    fetchUser();
+  }, []);
+ 
+  const renderProfileImage = () => {
+    if (user?.profileImage) {
+      return (
+        <img
+          src={user.profileImage}
+          alt="Profile"
+          className="w-5 h-5 rounded-full object-cover"
+        />
+      );
+    } else {
+      return (
+        <div className="w-10 h-10 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold text-1.5xl">
+          {user?.username ? user.username.charAt(0).toUpperCase() : "?"}
+        </div>
+      );
+    }
   };
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white text-gray-800 p-2.5 fixed w-full top-0 z-10 shadow-lg">
+      <header className="bg-white text-gray-800 p-2.5 fixed w-full top-0 z-10 shadow-lg h-15">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">EcoConnect</h1>
 
@@ -89,13 +134,10 @@ const Layout = () => {
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
+                    
                       <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          alt="User Profile"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          className="size-8 rounded-full"
-                        />
+                        {renderProfileImage()}
                       </MenuButton>
                     </div>
 
@@ -114,6 +156,14 @@ const Layout = () => {
                           className="block px-4 py-2 text-sm text-gray-700"
                         >
                           Your Projects
+                        </a>
+                      </MenuItem>
+                      <MenuItem>
+                        <a
+                          href="/user/predictco2"
+                          className="block px-4 py-2 text-sm text-gray-700"
+                        >
+                          Co2 Emisson Track
                         </a>
                       </MenuItem>
                       <MenuItem>

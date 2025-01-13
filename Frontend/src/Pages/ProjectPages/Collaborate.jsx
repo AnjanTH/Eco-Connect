@@ -19,7 +19,7 @@ const CollaboratePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+        <div className="min-h-screen bg-gray-100 flex flex-col items-center mt-10">
             
             <main className="flex flex-col items-center mt-10 space-y-8">
                 <section className="bg-white p-6 rounded shadow-md w-11/12 max-w-md">
